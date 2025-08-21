@@ -63,7 +63,7 @@ export const eventURL = env.NEXT_PUBLIC_PAYLOAD_URI + '/api/events?limit=100';
 export async function fetchEvents(): Promise<Event[]> {
     try {
         // Fetching event data from payload with fetcher
-        const data = await fetcher.get.query([eventURL, { cache: 'no-store', prefixUrl: '' }]);
+        // const data = await fetcher.get.query([eventURL, { cache: 'no-store', prefixUrl: '' }]);
 
         const payloadData = data.docs;
         const EVENTS: Event[] = [];
@@ -117,8 +117,8 @@ export const parseEvents = (raw: PayloadEvent): Event => {
             ? `${new Date(raw.time.start).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - 
             ${new Date(raw.time.end).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`
             : 'Unknown',
-        startTime: raw.time?.start ?? '00:00',
-        endTime: raw.time?.end ?? '21:00',
+        endTime: raw.time.end.toString().split(' - ')[1] ?? '21:00',
+        startTime: raw.time.start.toString().split(' - ')[1] ?? '00:00',
         location: raw.location,
         details: raw.details,
         url:
