@@ -18,12 +18,14 @@ type Month =
 
 export type Event = {
     title: string;
-    date: { year: number; month: Month; day: number; endTime: string };
+    date: { year: number; month: Month; day: number };
     time: string;
     location: string;
     details: string;
     url?: { href: URL; text?: string };
     image: string;
+    startTime: string;
+    endTime: string;
 };
 
 // API response format from PayloadCMS
@@ -110,12 +112,13 @@ export const parseEvents = (raw: PayloadEvent): Event => {
             year: eventDate.getUTCFullYear(),
             month: monthNames[eventDate.getUTCMonth()],
             day: eventDate.getUTCDate(),
-            endTime: eventDate.toString().split(' - ')[1] ?? '21:00', // if undefined 9:00pm required for Events.tsx logic
         },
         time: raw.time
             ? `${new Date(raw.time.start).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - 
             ${new Date(raw.time.end).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`
             : 'Unknown',
+        startTime: raw.time?.start ?? '00:00',
+        endTime: raw.time?.end ?? '21:00',
         location: raw.location,
         details: raw.details,
         url:
